@@ -1,48 +1,67 @@
-# 芯片进化局
+# Chip Evolution: UESTC Merge Game
 
-`index.html` 是可单独转发的离线游戏：样式、游戏脚本和八张图片全部嵌在文件内。可以复制、改名、转发这一个 HTML，游玩时无需网络或服务器。
+`index.html` is a self-contained, offline version of the game. It includes its styles, game code, and all eight image assets, so you can copy or share this single file and play without a server or an internet connection.
 
-- 鼠标移动或手指拖动来瞄准，松开投放。
-- 键盘 `←`、`→` 调整位置，空格投放，`P` 暂停，`R` 重开。
-- 两颗相同等级的球接触后合成；连续合成增加得分。越线持续两秒才结束。
-- 空穴、二极管、集成电路为横椭圆，格拉斯哥为竖椭圆。碰撞会带动旋转，落点和堆叠方向都会影响合成。
-- 顶部按钮可开关音效、暂停和重开。最高分保存在当前浏览器。
+## How to play
 
-## 手机游玩
+- Move the mouse or drag with a finger to aim, then release to drop an item.
+- Use the left and right arrow keys to adjust the drop position, Space to drop, `P` to pause, and `R` to restart.
+- Matching items merge into the next level. Consecutive merges increase the score.
+- The game ends when an item stays above the warning line for two seconds.
+- Holes, diodes, and integrated circuits are horizontal ellipses; Glasgow is a vertical ellipse. Collisions can cause rotation, so drop position and stack direction affect merges.
+- Use the buttons at the top to toggle sound, pause, or restart. The high score is saved in the current browser when storage is available.
 
-页面包含手机竖屏、横屏和安全区域布局。棋盘保持原比例，短屏会缩小棋盘；很短的屏幕仍可滚动页面。按住棋盘拖动瞄准，松手投放；多指触碰、系统取消手势不会额外掉球。
+## Playing on a phone
 
-将 `index.html` 转发到手机并下载保存，用支持本地 HTML 和 JavaScript 的浏览器或 HTML 运行应用打开。电脑上也可以直接用浏览器打开这个文件。
+The page supports portrait and landscape layouts, including screen safe areas. The board keeps its proportions and scales down on shorter screens. On very short screens, the page can scroll. Drag on the board to aim and release to drop; multi-touch and canceled system gestures should not trigger an extra drop.
 
-部分文件预览界面只展示 HTML，不运行游戏脚本。如果始终显示“正在启动游戏”，请换用能够运行本地 HTML 脚本的应用。单文件打包解决了资源携带问题，不能保证每一种手机文件预览应用都允许执行脚本。
+Send `index.html` to your phone, download it, and open it with a browser or an HTML viewer that can run local HTML and JavaScript. You can also open the file directly in a desktop browser.
 
-触摸操作需要打开应用支持 Pointer Events。最高分会尝试保存在本地；如果打开应用禁止存储，游戏仍然可玩，但关闭后可能不会保留纪录。
+Some file-preview apps display the HTML without running its JavaScript. If the game remains on “Starting game,” use an app that supports local scripts. Packaging the game as one file keeps its assets together, but does not guarantee that every phone preview app will run it.
 
-## 更新可转发文件
+Touch controls require Pointer Events support. The game attempts to save the high score locally; if the app blocks storage, the game remains playable, but the record may not persist after closing it.
 
-`game.js` 和 `lv1.png` 至 `lv8.png` 保留为维护源码和 Python 版资源。修改它们后运行：
+## Rebuilding the portable HTML
+
+`game.js` and `lv1.png` through `lv8.png` are the editable web source and shared assets. After changing them, run:
 
 ```bash
 python3 build_html.py
 ```
 
-这会更新同一个 `index.html`，保留页面样式和手机适配。接收游戏的人只需要这个 HTML 文件。
+This regenerates `index.html` while preserving its styles and mobile layout. Players only need the resulting HTML file.
 
-## Python 版本
+## Python version
 
-安装 Pygame 后，在这个目录运行：
+Install Pygame and run the game from this directory:
 
 ```bash
 python3 -m pip install pygame
 python3 main.py
 ```
 
-Python 版使用同一套八级关卡素材与椭圆形状，也支持弹性碰撞、连锁得分、越线倒计时、音效开关和最高分记录。它不需要 Pymunk。两版的椭圆接触采用旋转 20 边形近似，并计算碰撞带来的转动。
+The Python version uses the same eight level images and ellipse shapes. It also includes bouncy collisions, combo scoring, a warning-line timer, sound controls, and a high-score record. It does not require Pymunk. In both versions, ellipse collisions use a rotating 20-sided approximation and can produce spin.
 
-运行 `python3 -m unittest test_main.py` 可以检查 Python 版的碰撞、合成、结束判定与渲染。
+Run the Python tests with:
 
-网页核心规则可用 `node test_game.cjs` 检查。`node test_game.cjs --portable-only` 会检查单文件资源、源码同步、离线启动以及存储被禁用时的投放和合成。
+```bash
+python3 -m unittest test_main.py
+```
 
-## 格拉斯哥图标来源
+Run the web-game checks with:
 
-`lv7.png` 来自[格拉斯哥大学官方品牌下载页](https://www.gla.ac.uk/myglasgow/staff/brandtoolkit/logo/downloads/)的[原版标志素材包](https://www.gla.ac.uk/media/Media_1228330_smxx.zip)。使用其中 `Unboxed colour logo white text.png` 的盾徽部分，裁去空白和校名字样，保留原始颜色及比例。
+```bash
+node test_game.cjs
+```
+
+The portable-only checks can be run with:
+
+```bash
+node test_game.cjs --portable-only
+```
+
+They check the self-contained assets, source synchronization, offline startup, and dropping and merging when browser storage is unavailable.
+
+## Glasgow logo source
+
+`lv7.png` is based on the original logo package from the [University of Glasgow Brand Toolkit](https://www.gla.ac.uk/myglasgow/staff/brandtoolkit/logo/downloads/), specifically its [logo asset archive](https://www.gla.ac.uk/media/Media_1228330_smxx.zip). The university shield was cropped from `Unboxed colour logo white text.png`, removing the surrounding whitespace and wordmark while preserving the shield's colors and proportions.
